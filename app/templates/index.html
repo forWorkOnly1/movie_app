@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+{% block title %}Home - Movie Recommender{% endblock %}
+
+{% block content %}
+<h1 class="text-center mb-4">Movie Recommendation System</h1>
+
+<!-- Search -->
+<form method="POST" id="searchForm" class="row g-2 mb-4 justify-content-center position-relative">
+  <div class="col-12 col-md-8 position-relative">
+    <input name="movie_name" value="{{ query }}" type="text"
+           class="form-control form-control-lg"
+           placeholder="Enter movie title (e.g., Inception)">
+    <div id="suggestions"></div>
+  </div>
+  <div class="col-auto">
+    <button type="submit" id="searchBtn" class="btn btn-primary btn-lg">Search</button>
+  </div>
+</form>
+
+<!-- Alert shown only if guest tries to search -->
+<div id="loginAlert" class="alert alert-warning d-none text-center">
+  You must <a href="{{ url_for('auth.login') }}">log in</a> to use the recommendation search.
+</div>
+
+{% if not_found_message %}
+  <div class="alert alert-warning">{{ not_found_message }}</div>
+{% endif %}
+
+<!-- Recommendations (only for logged-in users) -->
+{% if current_user.is_authenticated and recommendations %}
+<h3 class="mb-3">Recommended Movies</h3>
+<div class="row">
+  {% for movie in recommendations %}
+    <div class="col-6 col-sm-4 col-md-3 mb-4">
+      <div class="card movie-card h-100 shadow-sm">
+        {% if movie.poster %}
+          <a href="https://www.themoviedb.org/movie/{{ movie.id }}" target="_blank">
+            <img src="{{ movie.poster }}" class="card-img-top" alt="{{ movie.title }}">
+          </a>
+        {% endif %}
+
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">{{ movie.title }}</h5>
+          <p class="card-text overview">{{ movie.overview[:100] }}...</p>
+
+          <div class="mt-auto">
+            {% if movie.rating %}
+              <span class="badge badge-rating me-2">★ {{ movie.rating }}</span>
+            {% endif %}
+            <a href="#" class="more-btn" data-bs-toggle="modal" data-bs-target="#movieModal{{ loop.index }}">More</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="movieModal{{ loop.index }}" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">{{ movie.title }}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <p><strong>Genres:</strong> {{ movie.genres|join(', ') }}</p>
+            <p><strong>Release Date:</strong> {{ movie.release_date }}</p>
+            <p><strong>Runtime:</strong> {{ movie.runtime|runtime_to_hm }}</p>
+            <hr>
+            <p>{{ movie.overview }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<!-- Trending -->
+{% if trending %}
+<h3 class="mb-3 ">Trending This Week</h3>
+<div class="row">
+  {% for movie in trending %}
+    <div class="col-6 col-sm-4 col-md-3 mb-4 ">
+      <div class="card movie-card h-100 shadow-sm">
+        {% if movie.poster %}
+          <a href="https://www.themoviedb.org/movie/{{ movie.id }}" target="_blank">
+            <img src="{{ movie.poster }}" class="card-img-top" alt="{{ movie.title }}">
+          </a>
+        {% endif %}
+
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">{{ movie.title }}</h5>
+          <p class="card-text overview">{{ movie.overview[:100] }}...</p>
+
+          <div class="mt-auto">
+            {% if movie.rating %}
+              <span class="badge badge-rating me-2">★ {{ movie.rating }}</span>
+            {% endif %}
+            <a href="#" class="more-btn" data-bs-toggle="modal" data-bs-target="#trendModal{{ loop.index }}">More</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal for Trending -->
+    <div class="modal fade" id="trendModal{{ loop.index }}" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">{{ movie.title }}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <p><strong>Genres:</strong> {{ movie.genres|join(', ') }}</p>
+            <p><strong>Release Date:</strong> {{ movie.release_date }}</p>
+            <p><strong>Runtime:</strong> {{ movie.runtime|runtime_to_hm }}</p>
+            <hr>
+            <p>{{ movie.overview }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const input = document.querySelector('input[name="movie_name"]');
+  const suggestionBox = document.getElementById("suggestions");
+  const form = document.getElementById("searchForm");
+  const alertBox = document.getElementById("loginAlert");
+
+  // Suggestion logic
+  if (input){
+    input.addEventListener("input", () => {
+      const q = input.value.trim();
+      if (!q) { suggestionBox.innerHTML = ""; return; }
+      fetch(`/suggest?q=${encodeURIComponent(q)}`)
+        .then(res => res.json())
+        .then(data => {
+          suggestionBox.innerHTML = "";
+          data.suggestions.forEach(s => {
+            const div = document.createElement("div");
+            div.textContent = s;
+            div.onclick = () => { input.value = s; suggestionBox.innerHTML = ""; };
+            suggestionBox.appendChild(div);
+          });
+        });
+    });
+  }
+
+  // If guest tries to search → show alert instead of submitting
+  {% if not current_user.is_authenticated %}
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    alertBox.classList.remove("d-none");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+  {% endif %}
+});
+</script>
+{% endblock %}

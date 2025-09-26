@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Conversation Details - Movie Recommender{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Conversation from {{ conversation.date }}</h2>
+        <div>
+            <button id="deleteConversationBtn" class="btn btn-danger me-2" data-conversation-id="{{ conversation.id }}">
+                🗑️ Delete This Chat
+            </button>
+            <a href="{{ url_for('main.chat_history') }}" class="btn btn-secondary">
+                ← Back to Chat History
+            </a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Chat Messages ({{ conversation.messages|length }} total)</h5>
+            <button id="clearMessagesBtn" class="btn btn-outline-warning btn-sm" data-conversation-id="{{ conversation.id }}">
+                🧹 Clear Messages
+            </button>
+        </div>
+        <div class="card-body">
+            {% if conversation.messages %}
+            <div class="chat-messages">
+                {% for message in conversation.messages %}
+                <div class="message-row mb-3">
+                    {% if message.user %}
+                    <!-- User Message -->
+                    <div class="d-flex justify-content-end mb-2">
+                        <div class="bg-primary text-white p-3 rounded" style="max-width: 80%;">
+                            <p class="mb-1">{{ message.user }}</p>
+                            <small class="opacity-75">{{ message.timestamp }}</small>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if message.bot %}
+                    <!-- Bot Message -->
+                    <div class="d-flex justify-content-start mb-2">
+                        <div class="bg-light p-3 rounded" style="max-width: 80%;">
+                            <p class="mb-1">{{ message.bot }}</p>
+                            <small class="text-muted">{{ message.timestamp }}</small>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center text-muted py-4">
+                <i class="fas fa-comment-slash fa-3x mb-3"></i>
+                <p>No messages found in this conversation.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/conversationDetail.js') }}"></script>
+{% endblock %}
+
+<style>
+.chat-messages {max-height: 600px; overflow-y: auto;}
+.rounded { border-radius: 15px !important;}
+.message-row { display: flex; flex-direction: column; }
+.message-bubble { padding: 12px 16px; border-radius: 18px; max-width: 80%; word-wrap: break-word; }
+.user-bubble { background-color: #007bff; color: white; margin-left: auto;}
+.bot-bubble { background-color: #f8f9fa; border: 1px solid #dee2e6; }
+.user-message { justify-content: flex-end; }
+.bot-message { justify-content: flex-start; }
+.chat-messages { max-height: 600px; overflow-y: auto; }
+</style>

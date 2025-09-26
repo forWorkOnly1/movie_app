@@ -1,0 +1,76 @@
+    :root {
+      --primary: #2A70EB;   
+      --secondary: #602AEB; 
+      --accent: #EBC32B;    
+      --neutral-dark: #52496B; 
+      --neutral-light: #6B6449; 
+      --neutral-gray: #49556B;  
+      --bg-light: #f7f7f9;
+      --bg-dark: #181a1b;
+      --text-light: #e4e6eb;
+    }
+
+    body {  padding-top: 70px;  background:#f7f7f9;  min-height: 100vh; display: flex; flex-direction: column; }
+    
+    .container {  flex: 1; }
+    
+    .movie-card img { border-radius: 8px; width: 100%; height: auto; object-fit: contain; }
+    .movie-card { border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); transition: transform 0.5s ease; }
+    .movie-card:hover { transform: scale(1.05); }
+    .more-btn { background-color: var(--neutral-dark); color:white; border-radius: 5px; padding: 7px; margin: 9px; font-weight: bold; text-decoration: none; }
+    .more-btn:hover { background-color: var(--secondary); color:white; }
+    .overview { min-height: 60px; overflow: hidden; }
+    .badge { line-height: 2; background-color: var(--accent);}
+    body:not(.dark-mode) #nav {background-color: var(--primary) !important;}
+    body.dark-mode #mainNavbar { background-color: var(--neutral-gray) !important; }
+    
+    .footer {  background:#2c2f33;  color:#bbb;  text-align:center;  padding: 1.5rem 0;  margin-top: auto;  width: 100%; }
+    
+    .footer-title { color:var(--primary); font-size:22px; margin-bottom:0; }
+    .social-icon { margin:0 5px; font-size:24px; color:#bbb; transition: all 0.3s ease; }
+    .social-icon:hover { color:var(--primary); transform: scale(1.2); }
+    .copyright { font-size:0.85rem; color:#bdc1c6; margin-top:10px; }
+
+    /* Dark mode */
+    body.dark-mode { background:#181a1b; color:#e4e6eb; }
+    .dark-mode .card { background:#242526; color:#ddd; }
+    .dark-mode .footer { background:#2c2f33; color:#aaa; }
+    .dark-mode .modal-content { background:#242526; color:#e4e6eb; }
+    .dark-mode .modal-header, .dark-mode .modal-footer { border-color:#444; }
+    .dark-mode .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
+
+    #darkModeToggle {border: none;background: transparent; font-size: 1.5rem; cursor: pointer; transition: transform 0.3s ease;}
+    #darkModeToggle:hover { transform: rotate(20deg);}
+    #darkModeIcon { color: gold; }
+    body.dark-mode #darkModeIcon { color: rgb(88, 88, 92); }
+
+    /* ================= CHATBOT STYLES ================= */
+
+    #chatbot-icon { position: fixed; bottom: 20px; right: 20px; background: #49556bae; border-radius: 50%; width: 60px; height: 60px;
+       display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 1000; }
+    #chatbot-icon img { width: 30px; height: 30px; }
+    /* Chat window */
+    #chatbot { position: fixed; bottom: 90px; right: 20px; width: 320px; height: 400px;background: #fff; border-radius: 12px;  display: none; 
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2); flex-direction: column; overflow: hidden;  z-index: 1000; font-family: Arial, sans-serif; }
+    /* Chat header */
+    #chatHeader { background: var(--neutral-dark); color: #fff; padding: 10px; text-align: center; font-weight: bold; }
+    /* Chat messages */
+    #chatMessages { flex: 1; padding: 10px; overflow-y: auto; background: #f9f9f9; }
+    .message { margin: 6px 0; padding: 8px 12px; border-radius: 12px; max-width: 80%; word-wrap: break-word; }
+    .user {  background: var(--neutral-gray); color: #fff;  margin-left: auto; }
+    .bot { background: #e5e5ea; margin-right: auto; }
+    /* Chat input area */
+    #chatInput {  display: flex;  border-top: 1px solid #ddd; }
+    #chatText { flex: 1; padding: 10px; border: none;  resize: none; font-size: 14px; outline: none; }
+    #chatSend { padding: 10px 15px; background: var(--neutral-dark); border: none; color: #fff; cursor: pointer; font-weight: bold; }
+    #chatSend:hover {  background: var(--neutral-light); }
+    .message-time { font-size: 0.7em; color: #666; margin-top: 4px; text-align: right;}
+    body.dark-mode .message-time { color: #aaa;}
+
+    /* Dark mode chat */
+    body.dark-mode #chatbot { background: #242526; color: #e4e6eb;}
+    body.dark-mode #chatMessages { background: #181a1b; color: #e4e6eb;}
+    body.dark-mode .bot { background: #333; color: #fff; }
+    body.dark-mode .user { background: #555;  color: #fff;}
+
+ 
